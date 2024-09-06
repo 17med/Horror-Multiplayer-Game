@@ -1,0 +1,4 @@
+repository "Multiplayer game vcs@freadllytz@cloud"
+  path "/"
+    br "/main"
+    co "/main"

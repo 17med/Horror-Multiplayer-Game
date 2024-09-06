@@ -1,0 +1,113 @@
+﻿using UnityEngine;
+using Steamworks; // Make sure to reference the Steamworks.NET namespace
+
+public class SteamManager : MonoBehaviour
+{
+    private static SteamManager s_instance;
+    private static SteamManager Instance
+    {
+        get
+        {
+            if (s_instance == null)
+            {
+                // Create a new GameObject and attach the SteamManager script
+                s_instance = new GameObject("SteamManager").AddComponent<SteamManager>();
+            }
+            return s_instance;
+        }
+    }
+
+    private bool m_bInitialized = false;
+    public static bool Initialized
+    {
+        get
+        {
+            return Instance.m_bInitialized;
+        }
+    }
+
+    private void Awake()
+    {
+        // Ensure that this object is not duplicated and remains in every scene
+        if (s_instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        s_instance = this;
+        DontDestroyOnLoad(gameObject); // Persist through scene loads
+
+        // Initialize Steam
+        try
+        {
+            if (SteamAPI.RestartAppIfNecessary((AppId_t)480)) // Replace 480 with your actual AppID
+            {
+                Application.Quit(); // Close the application if Steam needs to restart it
+                return;
+            }
+        }
+        catch (System.DllNotFoundException e)
+        {
+            Debug.LogError("[Steamworks.NET] Could not load steam_api.dll. Make sure it is in the correct location.\n" + e);
+            Application.Quit();
+            return;
+        }
+
+        m_bInitialized = SteamAPI.Init();
+        if (!m_bInitialized)
+        {
+            Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed. Make sure the Steam client is running.");
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (s_instance == null)
+        {
+            s_instance = this;
+        }
+
+        if (m_bInitialized)
+        {
+            // Hook into Steam API debug warnings
+            SteamClient.SetWarningMessageHook(SteamAPIDebugTextHook);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (s_instance == this)
+        {
+            s_instance = null;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (s_instance != this)
+        {
+            return;
+        }
+
+        // Shut down the Steam API if it was initialized
+        if (m_bInitialized)
+        {
+            SteamAPI.Shutdown();
+        }
+    }
+
+    private void Update()
+    {
+        // Ensure Steam callbacks are running frequently
+        if (m_bInitialized)
+        {
+            SteamAPI.RunCallbacks();
+        }
+    }
+
+    private static void SteamAPIDebugTextHook(int nSeverity, System.Text.StringBuilder pchDebugText)
+    {
+        Debug.LogWarning(pchDebugText.ToString());
+    }
+}

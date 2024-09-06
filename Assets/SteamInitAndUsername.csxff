@@ -1,0 +1,66 @@
+using UnityEngine;
+using Steamworks; // Make sure to reference the Steamworks.NET namespace
+using UnityEngine.UI;
+public class SteamInitAndUsername : MonoBehaviour
+{ public TMPro.TextMeshProUGUI steamIDText;
+    public RawImage avatarImage;
+
+    void setimage()
+    {
+    
+        if (SteamManager.Initialized)
+        {
+            CSteamID steamID = SteamUser.GetSteamID();
+            int avatarHandle = SteamFriends.GetLargeFriendAvatar(steamID); // Use GetSmallFriendAvatar or GetMediumFriendAvatar for other sizes
+
+            if (avatarHandle != -1)
+            {
+                // Request the avatar image asynchronously
+                SteamUtils.GetImageSize(avatarHandle, out uint width, out uint height);
+
+                if (width > 0 && height > 0)
+                {
+                    byte[] image = new byte[width * height * 4]; // Each pixel is RGBA (4 channels)
+                    SteamUtils.GetImageRGBA(avatarHandle, image, (int)(width * height * 4));
+
+                    // Create a Texture2D and load the image data into it
+                    Texture2D avatarTexture = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
+                    avatarTexture.LoadRawTextureData(image);
+                    avatarTexture.Apply();
+
+                    // Set the avatar texture to the UI RawImage component
+                    avatarImage.texture = avatarTexture;
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("Steam is not initialized.");
+        }
+    }
+    private void Start()
+    {
+        // Initialize Steam API
+        if (!SteamManager.Initialized)
+        {
+            Debug.LogError("Steam API failed to initialize.");
+            return;
+        }
+
+        // Get and display the Steam username
+        string steamUsername = SteamFriends.GetPersonaName();
+        
+        steamIDText.text = steamUsername;
+        setimage();
+        Debug.Log("Logged in Steam Username: " + steamUsername);
+    }
+
+    private void OnApplicationQuit()
+    {
+        // Shutdown Steam API when the application quits
+        if (SteamManager.Initialized)
+        {
+            SteamAPI.Shutdown();
+        }
+    }
+}

@@ -1,0 +1,49 @@
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Unity auto-generated files
+# Note: if you want to use .Net 4.x, uncomment this line:
+#*.csproj
+#*.unityproj
+#*.sln
+#*.suo
+#*.tmp
+#*.user
+#*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Visual Studio Code files
+.vscode/
+*.code-workspace
+
+# Rider files
+.idea/
+*.sln.iml
+
+# Unity metadata
+*.unitypackage
+
+# Generated lighting data
+/[Ll]ightmap[s]*/
+[Ll]ighting[Dd]ata.asset
+__Backupscenes/
+
+# Collaborate generated files
+/[Aa]ssets/Collab/
