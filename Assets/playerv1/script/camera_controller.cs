@@ -13,22 +13,25 @@ public float sens=350f;
 public float maxang=90f;
 public float minang=-90f;
 public Transform player;
-float FieldOfView=60;
-private float scroll;
-[SerializeField]
-private NightVision n;
-[SerializeField]
-private CinemachineVirtualCamera camx;
-[SerializeField] private Slider slider;
-[SerializeField] private GameObject cam;
+private NetworkVariable<Vector3> headRotation = new NetworkVariable<Vector3>(new Vector3(),NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
 [SerializeField] private GameObject head;
 
-
+void DestroyAllChildren(GameObject parentObject)
+{
+	// Loop through all children of the parent object
+	foreach (Transform child in parentObject.transform)
+	{
+		// Destroy each child game object
+		Destroy(child.gameObject);
+	}
+}
 	void Start () {
 		if (!IsOwner)
 		{	interact_system i=GetComponent<interact_system>();
 			i.enabled = false;
-			Destroy(gameObject);
+			nightvision4camera nv=GetComponent<nightvision4camera>();
+			nv.enabled = false;
+			DestroyAllChildren(gameObject);
 			return;
 		}
 	Cursor.visible=false;
@@ -38,9 +41,21 @@ private CinemachineVirtualCamera camx;
 	
 	// Update is called once per frame
 	void Update () {
-		head.transform.eulerAngles=transform.eulerAngles;
+		
+		if (IsLocalPlayer)
+		{
+			// Update the head rotation on the local player
+			Vector3 currentRotation = this.transform.eulerAngles;
+			head.transform.eulerAngles = currentRotation;
+
+			// Send the rotation to other players
+			headRotation.Value = currentRotation;
+		}
+		
+		
 		if (!IsOwner)
 		{
+			head.transform.eulerAngles = headRotation.Value;
 			return;
 		}
 
@@ -51,35 +66,10 @@ private CinemachineVirtualCamera camx;
 	Rotation= Mathf.Clamp(Rotation,minang,maxang);
 	transform.localRotation=Quaternion.Euler(Rotation,0,0);
 	player.Rotate(Vector3.up*mousx);
-	scroll = Input.mouseScrollDelta.y;
 	
 	
-	if (n.getstate())
-	{
-		float v=camx.m_Lens.FieldOfView-scroll*5;
-		if (v >= 20 && v <= 60)
-		{
-			
-			camx.m_Lens.FieldOfView=v;
-		}
-		if (v > 60)
-		{
-			
-			camx.m_Lens.FieldOfView = 60f;
-		}
-
-		if (v < 20)
-		{	
-			camx.m_Lens.FieldOfView = 20f;
-		}
-		
-		slider.value = (1-(camx.m_Lens.FieldOfView/60))*2;
-		
-	}
-	else
-	{
-		camx.m_Lens.FieldOfView = 60;
-	}
+	
+	
 	
 	
 	

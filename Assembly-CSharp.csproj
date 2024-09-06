@@ -53,6 +53,7 @@
     <Compile Include="Assets\Dark UI\Scripts\BlurManager.cs" />
     <Compile Include="Assets\networkmanagerui.cs" />
     <Compile Include="Assets\playerv1\takeobj\take.cs" />
+    <Compile Include="Assets\nightvision4camera.cs" />
     <Compile Include="Assets\Dark UI\Scripts\SplashScreenManager.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\LampOnOFF.cs" />
