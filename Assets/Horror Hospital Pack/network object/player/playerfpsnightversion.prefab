@@ -912,7 +912,8 @@ MonoBehaviour:
   text: {fileID: 70946281235768221}
   movedir: {x: 0, y: 0, z: 0}
   animator: {fileID: 8799862208807682797}
-  skinnedMeshRenderers: []
+  skinnedMeshRenderers:
+  - {fileID: 7181322593462675031}
   skinnedMeshRenderers2:
   - {fileID: 7181322593462675029}
   - {fileID: 7181322593462675025}
