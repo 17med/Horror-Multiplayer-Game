@@ -62,6 +62,7 @@ public AudioClip jumpclip;        // Array of footstep sound clips
 public float stepInterval = 0.5f;        // Time interval between steps
 public float stepIntervalRuning = 0.5f;        // Time interval between steps
 private float stepTimer = 0f;
+private Vaulting vaulting;
 public void DisableSkinnedMeshRenderersInList()
 {
 	foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
@@ -115,7 +116,7 @@ public override void OnNetworkSpawn()
 }
 	void Start () {
 		transform.position=new Vector3(3.672f,1.646f,0.084f);
-		
+		vaulting=gameObject.GetComponent<Vaulting>();
 		 if (!IsOwner)
                         {
 	                        Destroy(light1);
@@ -191,7 +192,7 @@ public override void OnNetworkSpawn()
                             return;
                         }
 
-                        if (controller.height == normalHeight)
+                        if (controller.height == normalHeight && vaulting.getstate()==false)
                         {
 	                        DisableSkinnedMeshRenderersInList2(true);
                         }

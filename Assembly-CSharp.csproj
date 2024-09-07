@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Assets\ClientNetworkTransform.cs" />
     <Compile Include="Assets\Dark UI\Scripts\SwitchManager.cs" />
+    <Compile Include="Assets\Vaulting.cs" />
     <Compile Include="Assets\Dark UI\Scripts\VirtualCursor.cs" />
     <Compile Include="Assets\Dark UI\Scripts\UIDissolveEffect.cs" />
     <Compile Include="Assets\OwnerNetworkAnimator.cs" />
